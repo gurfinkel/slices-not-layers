@@ -1,6 +1,6 @@
 ---
 name: vertical-slicing
-description: Methodology for planning and building software as thin, vertical, end-to-end slices — each cutting through every layer to deliver demonstrable behavior — instead of horizontal layers that only integrate at the end. Covers the walking skeleton (the thinnest running end-to-end path, with the correctness contract baked in, built/deployed/tested by one command from day one), slice sizing (Elephant-Carpaccio thin, INVEST, one-axis cuts), sequencing (risk-first for the skeleton, then value-first), the eval-first / testable definition of done (write the acceptance check before building), and the share-vs-duplicate seam (a deliberate shared kernel behind a narrow contract vs. per-variant slices). Also verifies that an existing plan is genuinely vertical rather than a disguised layered or big-bang plan. Technology-agnostic; applies to any build, greenfield or feature. Use when planning a build, defining slice 0/1/2…, decomposing a feature or epic into increments, sequencing work under deadline or risk, kick-starting a greenfield project, or reviewing whether a plan actually supports vertical slicing. Composes with `decision-documentation` (decisions justify WHAT to build; slices plan HOW) and `validate-the-validator` (each slice's definition of done is an eval / acceptance case).
+description: Methodology for planning and building software as thin, vertical, end-to-end slices — each cutting through every layer to deliver demonstrable behavior — instead of horizontal layers that only integrate at the end. Covers the walking skeleton (the thinnest running end-to-end path, with the correctness contract baked in, built/deployed/tested by one command from day one), slice sizing (Elephant-Carpaccio thin, INVEST, one-axis cuts), sequencing (risk-first for the skeleton, then value-first), the eval-first / testable definition of done (write the acceptance check before building), and the share-vs-duplicate seam (a deliberate shared kernel behind a narrow contract vs. per-variant slices), and naming the structure by an established taxonomy (Feature-Sliced Design, Bulletproof React, Ports & Adapters) instead of invented folders. Also verifies that an existing plan is genuinely vertical rather than a disguised layered or big-bang plan. Technology-agnostic; applies to any build, greenfield or feature. Use when planning a build, defining slice 0/1/2…, decomposing a feature or epic into increments, sequencing work under deadline or risk, kick-starting a greenfield project, naming a feature or folder structure, or reviewing whether a plan actually supports vertical slicing. Composes with `decision-documentation` (decisions justify WHAT to build; slices plan HOW) and `validate-the-validator` (each slice's definition of done is an eval / acceptance case).
 ---
 
 # vertical-slicing
@@ -199,6 +199,23 @@ Good — Spike (timeboxed): can we extract structured figures from these decks, 
 
 **When overkill:** the slice is already estimable — no spike needed; just build it.
 
+---
+
+### Principle 9 — Name by intent; adopt an established taxonomy, don't invent folders
+
+**Prevents:** an invented cross-cutting folder — `engine/`, `manager/`, `helpers/`, `utils/` — that hides intent, belongs to no convention, and grows into a dumping ground.
+
+**The rule:** folder names must **scream the domain** (Martin, *Screaming Architecture*), and you **adopt a battle-tested taxonomy** rather than coining your own — Feature-Sliced Design or Bulletproof React for JS/TS; Ports & Adapters, domain services, and the Shared Kernel (DDD / Hexagonal) for the cross-cutting core. Actions are `features/` named by a **verb** (`ask`, not `qa`); domain nouns and the shared correctness kernel get a **domain** name (`core`, `domain`, `entities`) — never a mechanism name. Imports flow one way (down into the kernel and shared, never sideways between slices), and you **enforce the taxonomy with a linter** (Steiger; `eslint import/no-restricted-paths`) — an un-enforced convention erodes within weeks.
+
+```
+Bad  — src/engine/ (retrieval+grounding+citation), src/qa/, src/utils/ — invented, mechanism-named, unenforced.
+Good — src/core/{retrieval,grounding,citation,model}, src/features/ask, src/shared/ — named by intent, linter-enforced.
+```
+
+**Anti-pattern:** a `shared/utils.ts` or `engine/` catch-all. If you can't name a folder by what it *is* in the domain, you haven't found its home yet.
+
+**When overkill:** a throwaway spike — but any code that survives it gets a real, convention-named home.
+
 ## The procedure
 
 To produce a slice plan from a capability:
@@ -223,6 +240,7 @@ To produce a slice plan from a capability:
 □ Cross-cutting invariants are a deliberate shared kernel behind a narrow contract; variant work is sliced; the kernel never branches on the caller.
 □ Un-estimable work is preceded by a timeboxed spike, labeled as throwaway learning — not counted as a delivered slice.
 □ The system stays runnable (gate green) after every slice — never a "big integration" step at the end.
+□ Folders are named by an established taxonomy (features / core / shared — a verb for actions, a domain name for the kernel), never an invented mechanism name like "engine"; enforced by a linter.
 ```
 
 ## Costs to acknowledge honestly
@@ -254,3 +272,6 @@ The method is a synthesis, cited by the layer each source owns.
 - **Sandi Metz** — *The Wrong Abstraction*: duplication is far cheaper than the wrong abstraction; inline it back when it sprouts conditionals.
 - **Martin Fowler & Kent Beck** — *Refactoring*: the Rule of Three.
 - **Eric Evans** — *Domain-Driven Design*: the Shared Kernel — share only where the cost of divergence exceeds the cost of coordination.
+
+**Naming & structure**
+- **Feature-Sliced Design** (layers / slices / segments, and the *Steiger* linter) and **Bulletproof React** — Alan Alickovic — for the JS/TS folder taxonomy; **Ports & Adapters (Hexagonal)** — Alistair Cockburn — for naming the cross-cutting core behind interfaces. (*Screaming Architecture* and the *Shared Kernel* are cited above.)
