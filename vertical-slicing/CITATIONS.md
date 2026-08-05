@@ -27,3 +27,6 @@ The method is a synthesis, cited by the layer each source owns.
 **Reading the code as ground truth (the discover-and-bind step)**
 - **Jack W. Reeves** — "What Is Software Design?" (*C++ Journal*, 1992): the source code is the real, authoritative design. (The 2005 "…13 Years Later" essay is a follow-up; the original is 1992.)
 - **Robert C. Martin** — *Clean Code* (2008), ch. 4 "Comments": "Truth can only be found in one place: the code"; docs and comments drift out of sync with what runs.
+
+**Enforcing the boundaries (the fitness function)**
+- **Neal Ford, Rebecca Parsons & Patrick Kua** — *Building Evolutionary Architectures* (O'Reilly, 1st ed. 2017; the 2nd ed., 2022, *Automated Software Governance*, adds Pramod Sadalage): the **architectural fitness function** — "an objective integrity assessment of some architectural characteristic(s)" — adapted to software architecture from the **fitness function** of evolutionary computation / genetic algorithms (orig. **John Holland**, *Adaptation in Natural and Artificial Systems*, 1975). An automated linter such as **Steiger** (Feature-Sliced Design) is one implementation; describing such a linter as a "fitness function" is this skill's framing, not the tool's own.
