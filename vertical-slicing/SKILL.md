@@ -117,7 +117,7 @@ Good — first commit the case: "Q from a single passage → must answer AND cit
 
 **Anti-pattern:** "I'll add tests after the demo." The check written *after* is shaped to pass, not to catch — and usually never comes.
 
-**When overkill:** throwaway spikes (Principle 8), which are learning, not delivery, and carry no definition of done.
+**When overkill:** throwaway spikes (Principle 8), which are learning, not delivery, and carry no definition of done. And for a **mechanical, strongly-typed slice**, `typecheck` + a boundary test can be the acceptance check; reserve full eval-cases for correctness-critical behavior (money, credentials, auth).
 
 ---
 
@@ -216,10 +216,25 @@ Good — src/core/{retrieval,grounding,citation,model}, src/features/ask, src/sh
 
 **When overkill:** a throwaway spike — but any code that survives it gets a real, convention-named home.
 
+## Bind the skill to the repo first (discover-and-bind)
+
+The principles here are repo-agnostic; the repo supplies the facts. Before planning slices, read the target repo and bind each generic concept to what this repo actually does — so a new slice is **born conformant**, not retrofitted. Do this **at the correct ref** (verify the branch/commit you're on) and treat every binding as a **hypothesis to ground-truth against the actual code**, never an assumption.
+
+Discover, and write down, for this repo:
+- **Slice home & naming** — the top-level module structure new work lives in (inspect the tree + its architecture doc). Where a new slice goes, and what it's named (Principle 9).
+- **Public-interface convention** — how a module exposes its boundary (barrels, `index` files, explicit exports). How the new slice is consumed.
+- **Runtime-split convention** — how server-only code is marked vs. client/browser. A boundary the slice must obey.
+- **Fitness function** — the import-boundary linter / CI gate the slice must pass (Principle 9).
+- **Safety net** — type-system strength, CI, and the acceptance-check style the repo expects (Principle 4).
+- **Shared kernel** — the existing cross-cutting core the slice sits on rather than duplicates (Principle 7).
+
+Output a short explicit binding — *"in this repo: slice home = …, interface = …, server marker = …, fitness function = …, acceptance check = …, kernel = …"* — and plan the slices against that.
+
 ## The procedure
 
 To produce a slice plan from a capability:
 
+0. **Bind** — discover-and-bind the skill to the repo (above) before drawing the skeleton.
 1. **State the capability as observable behavior** — what a user (or caller) can *do* when it's done.
 2. **Draw the walking skeleton** (Principle 2) — the thinnest end-to-end path that runs, with the correctness contract baked in, buildable/deployable/testable by one command. This is slice 0.
 3. **Enumerate candidate slices** by cutting along *one axis at a time* (Principle 5) — list the paths, rules, and data variations.

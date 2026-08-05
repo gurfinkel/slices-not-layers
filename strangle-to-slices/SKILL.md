@@ -91,7 +91,7 @@ Good — approval test at POST /checkout capturing body + DB deltas + the charge
 
 **Anti-pattern:** characterizing only the HTTP response and missing the side effects a slice extraction reshuffles.
 
-**When overkill:** a feature already covered by trustworthy end-to-end tests at the right boundary — the net exists; reuse it.
+**When overkill:** a feature already covered by trustworthy end-to-end tests at the right boundary — the net exists; reuse it. Also a **mechanical move** (re-folder + re-wire imports, no logic reshape) in a strongly-typed codebase with CI — `typecheck` + existing boundary tests are the net; a fresh characterization test adds little. And you **cannot pin behavior that was never pinned**: moving already-untested code as-is neither adds nor removes coverage, so don't gate the move on tests the code never had (that's a backlog item, not a prerequisite). Keep full characterization for moves that reshape logic or touch untested side-effecting facades.
 
 ---
 
@@ -108,7 +108,7 @@ Good — OrderPlacement port over the layered chain → slice implements the sam
 
 **Anti-pattern:** a "migration toggle" that never gets removed. It is release-category inventory, not a feature flag — see Principle 8.
 
-**When overkill:** a leaf feature with a single caller and no shared dependencies can sometimes move in one green commit without a standing abstraction.
+**When overkill:** a leaf feature with a single caller and no shared dependencies can sometimes move in one green commit without a standing abstraction — as can a **pure re-foldering with no behavior change**, verified by types + CI; the module's public-interface convention (barrels/index) is the swap point if one is later needed.
 
 ---
 
@@ -125,7 +125,7 @@ Good — shadow the slice on live traffic, diff its result vs the layered path, 
 
 **Anti-pattern:** treating a green characterization suite as sufficient for cut-over — the suite covers what you imagined; the parallel run covers what production actually sends.
 
-**When overkill:** a low-risk, low-traffic feature where the characterization suite genuinely covers the input space — skip the shadow, but say so.
+**When overkill:** a low-risk, low-traffic feature where the characterization suite genuinely covers the input space — skip the shadow, but say so. And a **pure code-motion with no behavior change** needs no parallel run at all — types + CI already prove equivalence. Say so.
 
 ---
 
@@ -159,7 +159,7 @@ Good — "I need to add split-tender to checkout → first strangle checkout int
 
 **Anti-pattern:** a migration with no feature or bug attached to it. That's the standalone project the When-NOT gate forbids.
 
-**When overkill:** a genuinely greenfield module — there's nothing to migrate; use `vertical-slicing` and build it sliced from the start.
+**When overkill:** a genuinely greenfield module — there's nothing to migrate; use `vertical-slicing` and build it sliced from the start. Also bounded-exempt: the **one-time foundational pass** that stands up the kernel + boundaries (Principle 8) and codifies "new work is born sliced" as a written rule — legitimately standalone even with no feature attached. The rule still forbids open-ended, layer-by-layer migration with no finish line.
 
 ---
 
@@ -178,8 +178,24 @@ Good — helpers used by one slice live in that slice; each toggle ships with it
 
 **When overkill:** a two-slice migration may not need a linter — but it still needs the depopulate-and-delete discipline.
 
+## Bind the skill to the repo first (discover-and-bind)
+
+The principles here are repo-agnostic; the repo supplies the facts. Before applying any of them, read the target repo and bind each generic concept to what this repo actually does — so there is no open question of *how* the skill applies. Do this **at the correct ref** (verify the branch/commit you're on) and treat every binding as a **hypothesis to ground-truth against the actual code**, never an assumption — a wrong ref or an imagined convention produces a wrong migration.
+
+Discover, and write down, for this repo:
+- **Slice boundary & naming** — the top-level module structure it uses or intends (inspect the tree + its architecture doc). This is what a "feature slice" *is* here, and where it lives.
+- **Public-interface convention** — how a module exposes its boundary (barrels, `index` files, explicit exports). This is your seam (Principle 4).
+- **Runtime-split convention** — how server-only code is marked vs. client/browser (a suffix, a folder, a guard package). A boundary you must not cross.
+- **Fitness function** — the import-boundary linter / CI gate, if any: what it enforces, and what it leaves to discipline (Principle 8).
+- **Safety net** — type-system strength, CI, and existing test coverage *at the boundary you're moving*. This decides how much pinning a move needs (Principles 3–5).
+- **Gate inputs** — is this code under active development, with imminent work here? (the When-NOT gate, Principle 7).
+- **Documented deviations** — read the repo's own docs (CLAUDE.md / ADRs) for *deliberate* departures from the generic ideal, and treat them as binding. A deviation's rationale is usually not derivable from code — do not "fix" what the repo intentionally chose.
+
+Output a short explicit binding — *"in this repo: slice = …, seam = …, server marker = …, fitness function = … enforcing …, safety net = …, deviations = …"* — and run the rest of the procedure against that, not against a generic assumption.
+
 ## The procedure (per feature)
 
+0. **Bind** — discover-and-bind the skill to the repo (above) before gating.
 1. **Gate it** — confirm the structure is actually hurting *and* there's imminent work here (When-NOT). If not, stop.
 2. **Pin** — characterization / approval tests at the feature's stable entry point, side effects included; mutation-check the net (Principle 3).
 3. **Map** — attempt the naive move, record prerequisites on a Mikado graph, revert to green (Principle 6).
