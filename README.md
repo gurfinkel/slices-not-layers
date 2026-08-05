@@ -9,6 +9,12 @@ Skills for [Claude Code](https://claude.com/claude-code) that plan, build, and m
 
 `vertical-slicing` plans new work as slices; `strangle-to-slices` moves existing code into them. The family can still grow — `story-splitting` (the cut-line patterns) and `walking-skeleton` (kick-starting a greenfield project) are natural future siblings.
 
+**Repo-agnostic — they fit your codebase, not a textbook one.** Each skill *discovers-and-binds* to your repo first: it reads your taxonomy, your public-interface convention, your server/client split, and your fitness function, then maps the principles onto what it finds. Nothing to configure.
+
+**Safe to review with.** Used to review a migration or a plan, they treat every finding as a *hypothesis to verify against the actual code* — sorted into three buckets (real defect → comment; skill too strict here → scope the skill; concern dissolves → drop), ranked by blast radius — so they don't spray false positives on a teammate's PR.
+
+> **Status:** v1, calibrated on real migrations and still learning. If a skill misfires on your repo, that's the signal — flag it and we scope the rule.
+
 ## Install
 
 Copy the skill directories into your Claude Code skills folder:
@@ -22,7 +28,7 @@ Start a new Claude Code session and the skill becomes available.
 
 ## Credits
 
-The skills operationalize a synthesis of named work; the underlying ideas are not mine.
+The skills operationalize a synthesis of named work; the underlying ideas are not mine. (Full per-principle citations live in each skill's `CITATIONS.md`.)
 
 **`vertical-slicing`:**
 
