@@ -1,6 +1,6 @@
 ---
 name: strangle-to-slices
-description: Methodology for migrating an existing codebase — organized by technical layer or framework convention — toward vertical feature slices, incrementally and safely, keeping the system releasable at every commit. Never a big-bang rewrite and never a long-lived branch. Covers the strangler-fig pattern (grow the new structure through the old, one feature at a time), pinning behavior with characterization / approval tests before moving code, inserting a seam via branch-by-abstraction and flipping callers behind a migration toggle, verifying with a parallel run / dark launch, discovering prerequisites with the Mikado Method (revert-on-red), doing the work as preparatory refactoring for an imminent change, and the anti-rot discipline (a minimal shared kernel, continuously depopulating the shared layer, deleting legacy last, and enforcing boundaries with a fitness function). Names each extracted slice by an established taxonomy (features / core / shared) rather than an invented folder. Also decides WHETHER a migration is even worth doing. Technology-agnostic. Use when moving a layered / framework-organized codebase to feature slices, extracting one feature into its own module, deciding whether to migrate at all, or reviewing a migration plan for big-bang or long-lived-branch risk. Composes with `vertical-slicing` (which plans new work as slices — this migrates existing code into that structure) and `validate-the-validator` (the characterization test and the parallel-run comparator are evals that must themselves be trustworthy).
+description: Migrate an existing layered or framework-organized codebase to vertical feature slices — incrementally, on trunk, releasable at every commit; never a big-bang rewrite or a long-lived branch. Strangler-fig, one feature at a time, behavior pinned before it moves, boundaries enforced by a fitness function, legacy deleted last. Repo-agnostic: discovers and binds to the target repo's conventions first. Use when moving layered code to feature slices, extracting one feature into a module, deciding whether to migrate at all, or reviewing a migration plan or PR for big-bang / long-lived-branch risk. Composes with `vertical-slicing` and `validate-the-validator`.
 
 ---
 
@@ -193,6 +193,10 @@ Discover, and write down, for this repo:
 
 Output a short explicit binding — *"in this repo: slice = …, seam = …, server marker = …, fitness function = … enforcing …, safety net = …, deviations = …"* — and run the rest of the procedure against that, not against a generic assumption.
 
+**Filled example (illustrative — derive your own, don't copy):** *slice = `features/<name>/` (a product capability: its UI, actions, service, and persistence together); seam = a browser barrel + a server barrel (`index.ts` / `index.server.ts`); server marker = a `.server.ts` suffix; fitness function = an import-boundary lint at error in CI, enforcing barrel-only + no-upward imports, but NOT the client/server boundary; safety net = strong types + CI + unit tests at the feature entry point; deviations = a documented reason a server-guard package is deferred — treat as binding.*
+
+**Persist it.** Once derived, write the binding into the repo's own docs (its CLAUDE.md / an ADR) so the next run reads it instead of re-deriving — and a human can correct it.
+
 ## The procedure (per feature)
 
 0. **Bind** — discover-and-bind the skill to the repo (above) before gating.
@@ -219,6 +223,17 @@ Output a short explicit binding — *"in this repo: slice = …, seam = …, ser
 □ The system is releasable at every single commit.
 ```
 
+## Reviewing with this skill (findings are hypotheses, not verdicts)
+
+Applying the skill *generates candidate findings; it does not certify them.* A green Definition-of-done is not proof, and a skill flag, a sub-agent claim, and a quick grep are all hypotheses. Before you act on one — above all before you comment on someone else's PR — discharge it:
+
+- **Verify at the correct ref.** Confirm the branch/commit you're reading, and re-derive the fact from the actual code, not from what the skill expects to find.
+- **Sort into three buckets, not pass/fail:** (1) **real defect** → comment; (2) **skill too strict for this repo/change** → *scope the skill* (add a when-not), don't fault the code; (3) **concern dissolves on inspection** → drop it, silently.
+- **Rank by blast radius.** A money / credentials / auth path outranks a folder name; spend scrutiny where a wrong answer costs most.
+- **Never manufacture a finding on moved-untested code.** You cannot pin behavior that was never pinned; a pure move that neither adds nor removes coverage is not this change's defect — a backlog note at most.
+
+(The full discipline for trusting a review's own findings lives in `validate-the-validator`.)
+
 ## Costs to acknowledge honestly
 
 - **The safety net is most of the work.** Characterization tests and a parallel-run comparator often cost more than the move itself — that cost *is* the de-risking; skipping it turns "migrate" into "rewrite and hope."
@@ -228,24 +243,4 @@ Output a short explicit binding — *"in this repo: slice = …, seam = …, ser
 
 ## Source citations
 
-The method is a synthesis, cited by the layer each source owns.
-
-**Why incremental, not big-bang**
-- **Martin Fowler** — *StranglerFigApplication*: grow the new system on the edges of the old; investment and returns accrue gradually and visibly.
-- **Joel Spolsky** — *Things You Should Never Do, Part I*: the evidence that from-scratch rewrites fail — reading code is harder than writing it, so working code is mistaken for junk.
-- **Sam Newman** — *Monolith to Microservices*: the incremental-decomposition pattern catalog; the modular-monolith end state.
-
-**The safety net**
-- **Michael Feathers** — *Working Effectively with Legacy Code*: legacy = code without tests; characterization tests; the Seam Model; Sprout/Wrap; the Legacy Code Change Algorithm.
-- **Emily Bache / Nicolas Carlo** — approval / golden-master testing for wide outputs.
-
-**Keeping it releasable**
-- **Martin Fowler / Paul Hammant / Jez Humble** — *Branch by Abstraction*: coexist old and new behind one abstraction, on trunk.
-- **Martin Fowler** — *Parallel Change* (expand/migrate/contract) and *Dark Launching*; **Pete Hodgson** — *Feature Toggles*: migration toggles as short-lived, removal-ticketed inventory.
-
-**Disciplined sequencing**
-- **Ola Ellnestam & Daniel Brolund** — *The Mikado Method*: discover prerequisites by experiment, revert on red, execute leaves-first.
-- **Kent Beck** — "make the change easy, then make the easy change"; **Martin Fowler** — *Preparatory Refactoring*, *Refactoring* (the two-hats rule).
-
-**The target structure**
-- **Derek Comartin** — *Restructuring to a Vertical Slice Architecture*; **Feature-Sliced Design** — the migration guide and the *Steiger* fitness-function linter; **Jimmy Bogard** — coupling within vs. between slices; **Bulletproof React** — Alan Alickovic — the practical feature-folder taxonomy; **Ports & Adapters** — Alistair Cockburn — for naming the extracted core behind interfaces. (The naming discipline itself lives in the sister skill `vertical-slicing`, Principle 9.)
+The method is a synthesis; sources are cited per principle in [CITATIONS.md](./CITATIONS.md).

@@ -1,6 +1,6 @@
 ---
 name: vertical-slicing
-description: Methodology for planning and building software as thin, vertical, end-to-end slices — each cutting through every layer to deliver demonstrable behavior — instead of horizontal layers that only integrate at the end. Covers the walking skeleton (the thinnest running end-to-end path, with the correctness contract baked in, built/deployed/tested by one command from day one), slice sizing (Elephant-Carpaccio thin, INVEST, one-axis cuts), sequencing (risk-first for the skeleton, then value-first), the eval-first / testable definition of done (write the acceptance check before building), and the share-vs-duplicate seam (a deliberate shared kernel behind a narrow contract vs. per-variant slices), and naming the structure by an established taxonomy (Feature-Sliced Design, Bulletproof React, Ports & Adapters) instead of invented folders. Also verifies that an existing plan is genuinely vertical rather than a disguised layered or big-bang plan. Technology-agnostic; applies to any build, greenfield or feature. Use when planning a build, defining slice 0/1/2…, decomposing a feature or epic into increments, sequencing work under deadline or risk, kick-starting a greenfield project, naming a feature or folder structure, or reviewing whether a plan actually supports vertical slicing. Composes with `decision-documentation` (decisions justify WHAT to build; slices plan HOW) and `validate-the-validator` (each slice's definition of done is an eval / acceptance case).
+description: Plan and build software as thin, vertical, end-to-end slices — each cutting through every layer to deliver demonstrable behavior — instead of horizontal layers that integrate only at the end. Walking skeleton first, Carpaccio-thin increments, eval-first definition of done, deliberate shared kernel, taxonomy-named folders. Repo-agnostic: discovers and binds to the target repo's conventions first. Use when planning a build, defining slice 0/1/2, decomposing a feature or epic into increments, sequencing under deadline or risk, kicking off a greenfield project, naming a folder structure, or reviewing whether a plan is genuinely vertical vs. a disguised layered or big-bang plan. Composes with `strangle-to-slices` (migrating existing code into this structure) and `validate-the-validator`.
 ---
 
 # vertical-slicing
@@ -230,6 +230,10 @@ Discover, and write down, for this repo:
 
 Output a short explicit binding — *"in this repo: slice home = …, interface = …, server marker = …, fitness function = …, acceptance check = …, kernel = …"* — and plan the slices against that.
 
+**Filled example (illustrative — derive your own):** *slice home = `features/<verb>/` (named by action); interface = a browser barrel + a server barrel; server marker = a `.server.ts` suffix; fitness function = an import-boundary lint at error in CI; acceptance check = `typecheck` + a boundary test for mechanical work, a golden eval-case for correctness-critical behavior; kernel = the existing cross-cutting core (auth, money, the correctness engine) the slice sits on.*
+
+**Persist it.** Once derived, write the binding into the repo's own docs (its CLAUDE.md / an ADR) so the next run reads it instead of re-deriving.
+
 ## The procedure
 
 To produce a slice plan from a capability:
@@ -258,6 +262,17 @@ To produce a slice plan from a capability:
 □ Folders are named by an established taxonomy (features / core / shared — a verb for actions, a domain name for the kernel), never an invented mechanism name like "engine"; enforced by a linter.
 ```
 
+## Reviewing with this skill (findings are hypotheses, not verdicts)
+
+Applying the skill *generates candidate findings; it does not certify them.* A green Definition-of-done is not proof, and a skill flag, a sub-agent claim, and a quick grep are all hypotheses. Before you act on one — above all before you comment on someone else's plan or PR — discharge it:
+
+- **Verify at the correct ref.** Confirm the branch/commit you're reading, and re-derive the fact from the actual code, not from what the skill expects to find.
+- **Sort into three buckets, not pass/fail:** (1) **real defect** → comment; (2) **skill too strict for this repo/work** → *scope the skill* (add a when-not), don't fault the code; (3) **concern dissolves on inspection** → drop it, silently.
+- **Rank by blast radius.** A money / credentials / auth path outranks a folder name; spend scrutiny where a wrong answer costs most.
+- **Never manufacture a finding.** A missing test on pre-existing behavior this slice doesn't touch is not this slice's defect — a backlog note at most.
+
+(The full discipline for trusting a review's own findings lives in `validate-the-validator`.)
+
 ## Costs to acknowledge honestly
 
 - **Iteration zero is real upfront work.** Wiring build+deploy+test to run by one command before the first feature has cost — paid back the first time it flushes an integration mistake while change is still cheap.
@@ -267,26 +282,4 @@ To produce a slice plan from a capability:
 
 ## Source citations
 
-The method is a synthesis, cited by the layer each source owns.
-
-**Starting a build (the walking skeleton)**
-- **Alistair Cockburn** — *Walking Skeleton* (*Crystal Clear*): the thinnest end-to-end implementation that links the main architectural components, grown while kept running.
-- **Andrew Hunt & David Thomas** — *The Pragmatic Programmer*, "Tracer Bullets": lean-but-complete code fired along the whole path, kept and grown — versus a throwaway prototype.
-- **Steve Freeman & Nat Pryce** — *Growing Object-Oriented Software, Guided by Tests*, ch. 10: "the thinnest slice of real functionality we can automatically build, deploy, and test end-to-end"; the first end-to-end test as iteration zero.
-
-**Organizing by slice**
-- **Jimmy Bogard** — *Vertical Slice Architecture* and "SOLID Architecture in Slices Not Layers": minimize coupling between slices, maximize it within; organize around the axis of change.
-- **Robert C. Martin** — *Screaming Architecture*: the top-level structure should scream the domain, not the framework.
-
-**Sizing & sequencing**
-- **Bill Wake** — *INVEST in Good Stories*: Independent, Negotiable, Valuable, Estimable, Small, Testable; split through the layers, not by layer.
-- **Alistair Cockburn & Henrik Kniberg** — *Elephant Carpaccio*: decompose one feature into ~15–20 one-day, end-to-end slices.
-- **Richard Lawrence** — the story-splitting patterns; **Mike Cohn** — *SPIDR* and the value/risk sequencing in *Agile Estimating and Planning*.
-
-**Share vs. duplicate**
-- **Sandi Metz** — *The Wrong Abstraction*: duplication is far cheaper than the wrong abstraction; inline it back when it sprouts conditionals.
-- **Martin Fowler & Kent Beck** — *Refactoring*: the Rule of Three.
-- **Eric Evans** — *Domain-Driven Design*: the Shared Kernel — share only where the cost of divergence exceeds the cost of coordination.
-
-**Naming & structure**
-- **Feature-Sliced Design** (layers / slices / segments, and the *Steiger* linter) and **Bulletproof React** — Alan Alickovic — for the JS/TS folder taxonomy; **Ports & Adapters (Hexagonal)** — Alistair Cockburn — for naming the cross-cutting core behind interfaces. (*Screaming Architecture* and the *Shared Kernel* are cited above.)
+The method is a synthesis; sources are cited per principle in [CITATIONS.md](./CITATIONS.md).
