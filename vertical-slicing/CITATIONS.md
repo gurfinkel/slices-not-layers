@@ -23,3 +23,7 @@ The method is a synthesis, cited by the layer each source owns.
 
 **Naming & structure**
 - **Feature-Sliced Design** (layers / slices / segments, and the *Steiger* linter) and **Bulletproof React** — Alan Alickovic — for the JS/TS folder taxonomy; **Ports & Adapters (Hexagonal)** — Alistair Cockburn — for naming the cross-cutting core behind interfaces. (*Screaming Architecture* and the *Shared Kernel* are cited above.)
+
+**Reading the code as ground truth (the discover-and-bind step)**
+- **Jack W. Reeves** — "What Is Software Design?" (*C++ Journal*, 1992): the source code is the real, authoritative design. (The 2005 "…13 Years Later" essay is a follow-up; the original is 1992.)
+- **Robert C. Martin** — *Clean Code* (2008), ch. 4 "Comments": "Truth can only be found in one place: the code"; docs and comments drift out of sync with what runs.

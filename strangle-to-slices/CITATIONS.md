@@ -21,3 +21,9 @@ The method is a synthesis, cited by the layer each source owns.
 
 **The target structure**
 - **Derek Comartin** — *Restructuring to a Vertical Slice Architecture*; **Feature-Sliced Design** — the migration guide and the *Steiger* fitness-function linter; **Jimmy Bogard** — coupling within vs. between slices; **Bulletproof React** — Alan Alickovic — the practical feature-folder taxonomy; **Ports & Adapters** — Alistair Cockburn — for naming the extracted core behind interfaces. (The naming discipline itself lives in the sister skill `vertical-slicing`, Principle 9.)
+
+**Reading the code as ground truth (the discover-and-bind step)**
+- **Jack W. Reeves** — "What Is Software Design?" (*C++ Journal*, 1992): the final source code is the real design — the authoritative artifact. (The 2005 "…13 Years Later" essay is a follow-up; the original is 1992.)
+- **Robert C. Martin** — *Clean Code* (2008), ch. 4 "Comments": "Truth can only be found in one place: the code"; "inaccurate comments are far worse than no comments at all"; comments drift the farther they sit from the code. See also **Brian W. Kernighan & P. J. Plauger** — *The Elements of Programming Style* (1974): "Don't comment bad code — rewrite it."
+- **G. K. Chesterton** — *The Thing* (1929), "The Drift from Domesticity": Chesterton's Fence — don't remove a fence until you know why it was put there. (The pithy one-liner is a paraphrase; the "fence or gate erected across a road" passage is the verbatim source.)
+- **Michael Feathers** — *Working Effectively with Legacy Code* (2004): characterization tests pin what the code *actually* does, not what docs claim (also cited under the safety net).
