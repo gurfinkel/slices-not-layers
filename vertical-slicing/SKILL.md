@@ -218,7 +218,7 @@ Good — src/core/{retrieval,grounding,citation,model}, src/features/ask, src/sh
 
 ## Bind the skill to the repo first (discover-and-bind)
 
-The principles here are repo-agnostic; the repo supplies the facts. Before planning slices, read the target repo and bind each generic concept to what this repo actually does — so a new slice is **born conformant**, not retrofitted. Do this **at the correct ref** (verify the branch/commit you're on) and treat every binding as a **hypothesis to ground-truth against the actual code**, never an assumption.
+The principles here are repo-agnostic; the repo supplies the facts. Before planning slices, read the target repo and bind each generic concept to what this repo actually does — so a new slice is **born conformant**, not retrofitted. Do this **at the correct ref** (verify the branch/commit you're on) and treat every binding as a **hypothesis to ground-truth against the actual code**, never an assumption. Derive every field from the code itself, traced until clear; treat docs, ADRs, and comments as unverified leads to confirm in code, never authority — they drift out of sync with what runs.
 
 Discover, and write down, for this repo:
 - **Slice home & naming** — the top-level module structure new work lives in (inspect the tree + its architecture doc). Where a new slice goes, and what it's named (Principle 9).

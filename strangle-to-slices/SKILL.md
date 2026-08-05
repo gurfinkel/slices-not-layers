@@ -189,7 +189,7 @@ Discover, and write down, for this repo:
 - **Fitness function** — the import-boundary linter / CI gate, if any: what it enforces, and what it leaves to discipline (Principle 8).
 - **Safety net** — type-system strength, CI, and existing test coverage *at the boundary you're moving*. This decides how much pinning a move needs (Principles 3–5).
 - **Gate inputs** — is this code under active development, with imminent work here? (the When-NOT gate, Principle 7).
-- **Documented deviations** — read the repo's own docs (CLAUDE.md / ADRs) for *deliberate* departures from the generic ideal, and treat them as binding. A deviation's rationale is usually not derivable from code — do not "fix" what the repo intentionally chose.
+- **Ground truth is the code, traced until clear — not the docs.** Derive every field above from the codebase itself (config, build/launch scripts, and dependency behavior included), following each thread until the fact is settled. Docs, ADRs, and code comments are *unverified leads at most* — they drift, and a stale one mis-binds the whole migration; confirm any claim against the code, never treat it as authority. When code looks wrong or missing, trace whether it's load-bearing before "fixing" it — an absent guard is often a deliberate omission some build/launch path requires; preserve it, and enforce only what the repo's own fitness function actually enforces.
 
 Output a short explicit binding — *"in this repo: slice = …, seam = …, server marker = …, fitness function = … enforcing …, safety net = …, deviations = …"* — and run the rest of the procedure against that, not against a generic assumption.
 
