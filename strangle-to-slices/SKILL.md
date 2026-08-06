@@ -32,6 +32,8 @@ Do NOT apply — and this gate is load-bearing:
 - **When the code isn't under active development.** The migration only pays off through the features you'll build on the new structure. No upcoming work → no payoff → don't start.
 - **As a standalone "migration project."** There is no such thing here. It is always preparatory refactoring for an imminent change (Principle 7), never an open-ended cleanup with its own budget and timeline.
 
+**One carve-out — separate the guardrail from the move.** The gate above governs *moving code* (adding public APIs, repointing imports), which delivers no user value on its own. It does **not** govern the *fitness function* that enforces the boundary: a ratcheted lint that fails **new** cross-boundary imports moves no code, is near-zero-risk, and is **preventive** — add it proactively even with no felt pain, because it stops fresh debt forming. This matters more the more code is authored by **agents or juniors**, who carry no memory of an unenforced convention — so an un-mechanized boundary decays in days, and the only thing that holds is a gate that *fails* the bad import (`make-illegal-states-unrepresentable`). Enforce a boundary that is already **real and stable**; don't lock in one you're still discovering.
+
 ## Relationship to the sister skills
 
 |  | The skill | What it answers |
@@ -150,7 +152,7 @@ Good — attempt the move, note "shared repo," "cross-feature import," "layer-ba
 
 **Prevents:** an open-ended "planned refactoring" that has no finish line, ships no value, and diverges into the rewrite you were avoiding.
 
-**The rule:** "make the change easy, then make the easy change" (Beck; Fowler). Carve the slice you are **about to build a feature in or fix a bug in** — the migration is the *make-it-easy* step for real, imminent work, not a standalone cleanup (the workflow Fowler flags as hardest to justify). Value ships with every step because every step is in service of shippable work. To make it self-propelling, **mandate the new structure for all new features** — new work is born sliced, so the layered code shrinks whether or not you ever run a dedicated pass.
+**The rule:** "make the change easy, then make the easy change" (Beck; Fowler). Carve the slice you are **about to build a feature in or fix a bug in** — the migration is the *make-it-easy* step for real, imminent work, not a standalone cleanup (the workflow Fowler flags as hardest to justify). Value ships with every step because every step is in service of shippable work. To make it self-propelling, **mandate the new structure for all new features** — new work is born sliced, so the layered code shrinks whether or not you ever run a dedicated pass. Make that mandate concrete by migrating **one feature fully and correctly first, as the exemplar** — the reference new work copies *and* the proven template (and runbook) for migrating the rest. Order matters: pick a slice **representative enough to be a real template yet contained enough to finish cleanly**, prove the pattern there, then sequence the rest value/risk-first (Principle 6) or on-touch.
 
 ```
 Bad  — "Q3 tech-debt initiative: migrate to vertical slices." (no feature attached, no finish line)
